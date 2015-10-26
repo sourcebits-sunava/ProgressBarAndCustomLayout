@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
 	        
 	        int i =1;
 	        int topIndex = i;
+	        int rightIndex = -1;
 	        
 	        for(;i<=50;++i)
 	        {
@@ -92,19 +93,21 @@ public class MainActivity extends Activity {
 		        
 		        if(currentHeight >= height)
 		        {
-		        	top = true;		        	
-		        	LayoutAddButton(button, RelativeLayout.RIGHT_OF,0,0,0,0,topIndex,top);
+		        	top = true;	
+		        	rightIndex = topIndex;
+		        	LayoutAddButton(button, RelativeLayout.RIGHT_OF,0,0,0,0,topIndex,top,rightIndex);
 		        	relativeLayout.addView(button);	
 		        	topIndex = i;
 		        	currentHeight = button.getMeasuredHeight();
-		        	
 		        	top =false;
 		        	
 		        	continue;
 		        }
-
+		        
+		        if(rightIndex>0)
+		        	++rightIndex;
 	        	
-		        LayoutAddButton(button, RelativeLayout.BELOW,0,0,0,0,i-1,top);
+		        LayoutAddButton(button, RelativeLayout.BELOW,0,0,0,0,i-1,top,rightIndex);
 		        
 		        relativeLayout.addView(button);	
 		        currentHeight = currentHeight + button.getMeasuredHeight() + 8;
@@ -116,7 +119,7 @@ public class MainActivity extends Activity {
 	        setContentView(relativeLayout, relativeLayoutParams);
 	    }
 	 
-	    private void LayoutAddButton(Button button, int align, int marginLeft, int marginTop, int marginRight, int marginBottom,int index,boolean top) {
+	    private void LayoutAddButton(Button button, int align, int marginLeft, int marginTop, int marginRight, int marginBottom,int index,boolean top,int rightOf) {
 	        // Defining the layout parameters of the Button
 	        RelativeLayout.LayoutParams buttonLayoutParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	        
@@ -124,13 +127,20 @@ public class MainActivity extends Activity {
 	        buttonLayoutParameters.setMargins(marginLeft, marginTop, marginRight, marginBottom);
 	        	 
 	        // Add Rule to Layout
-	        if(top)
+	        if(top && rightOf<0)
 	        {
 	        	buttonLayoutParameters.addRule(align,index);
+	        	
+	        }
+	        else if(top || rightOf>0)
+	        {
+	        	buttonLayoutParameters.addRule(align,index);
+	        	buttonLayoutParameters.addRule(RelativeLayout.RIGHT_OF,rightOf);
 	        }
 	        else
 	        {
 		        buttonLayoutParameters.addRule(align,index);
+		        
 		 
 	        }
 	        
